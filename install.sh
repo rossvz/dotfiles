@@ -19,10 +19,9 @@ install_nvim_linux() {
     *) echo "  unsupported arch for nvim install, skipping"; return 1 ;;
   esac
   local url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz"
-  curl -fsSL "$url" | tar xz -C /tmp
-  # Binary lands at /tmp/nvim-linux-<arch>/bin/nvim
-  install -m 755 "/tmp/nvim-linux-${arch}/bin/nvim" /usr/local/bin/nvim
-  rm -rf "/tmp/nvim-linux-${arch}"
+  # Extract full tarball into /usr/local — binary + runtime files (share/nvim/runtime/).
+  # Extracting only the binary breaks lua module loading.
+  curl -fsSL "$url" | tar xz --strip-components=1 -C /usr/local
   echo "  neovim $(nvim --version | head -1) installed"
 }
 
@@ -69,20 +68,34 @@ if command -v zellij &>/dev/null; then
   echo "  zellij: linked config"
 fi
 
-# --- code-server (Coder workspaces) ---
-if command -v code-server &>/dev/null; then
-  mkdir -p ~/.local/share/code-server/User
-  link "$REPO/vscode/settings.json" ~/.local/share/code-server/User/settings.json
-  link "$REPO/vscode/keybindings.json" ~/.local/share/code-server/User/keybindings.json
-  echo "  code-server: linked settings"
-  # Use the Open VSX-compatible list (code-server doesn't use the VS Code marketplace)
-  ext_list="$REPO/vscode/code-server-extensions.txt"
-  [ -f "$ext_list" ] || ext_list="$REPO/vscode/extensions.txt"
-  while IFS= read -r ext; do
-    [[ -z "$ext" || "$ext" == \#* ]] && continue
-    code-server --install-extension "$ext" --force 2>/dev/null || true
-  done < "$ext_list"
-  echo "  code-server: extensions installed"
+# --- VS Code extensions (Linux: code-server + VS Code Desktop remote) ---
+if [ "$OS" = "Linux" ]; then
+  # code-server (browser VS Code) — uses Open VSX, separate extension dir
+  if command -v code-server &>/dev/null; then
+    mkdir -p ~/.local/share/code-server/User
+    link "$REPO/vscode/settings.json" ~/.local/share/code-server/User/settings.json
+    link "$REPO/vscode/keybindings.json" ~/.local/share/code-server/User/keybindings.json
+    ext_list="$REPO/vscode/code-server-extensions.txt"
+    [ -f "$ext_list" ] || ext_list="$REPO/vscode/extensions.txt"
+    while IFS= read -r ext; do
+      [[ -z "$ext" || "$ext" == \#* ]] && continue
+      code-server --install-extension "$ext" --force 2>/dev/null || true
+    done < "$ext_list"
+    echo "  code-server: settings + extensions installed"
+  fi
+
+  # VS Code Desktop remote server — uses ~/.vscode-server/, full marketplace extensions
+  for vscode_cli in ~/.vscode-server/bin/*/bin/code-server; do
+    [ -x "$vscode_cli" ] || continue
+    mkdir -p ~/.vscode-server/data/Machine
+    link "$REPO/vscode/settings.json" ~/.vscode-server/data/Machine/settings.json
+    while IFS= read -r ext; do
+      [[ -z "$ext" || "$ext" == \#* ]] && continue
+      "$vscode_cli" --install-extension "$ext" --force 2>/dev/null || true
+    done < "$REPO/vscode/extensions.txt"
+    echo "  vscode-remote: settings + extensions installed"
+    break
+  done
 fi
 
 # macOS-only tools
