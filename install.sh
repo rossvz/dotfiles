@@ -10,14 +10,34 @@ link() {
   ln -sfn "$1" "$2"
 }
 
+install_nvim_linux() {
+  echo "  installing neovim..."
+  local arch
+  case "$(uname -m)" in
+    aarch64) arch="arm64" ;;
+    x86_64)  arch="x86_64" ;;
+    *) echo "  unsupported arch for nvim install, skipping"; return 1 ;;
+  esac
+  local url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz"
+  curl -fsSL "$url" | tar xz -C /tmp
+  # Binary lands at /tmp/nvim-linux-<arch>/bin/nvim
+  install -m 755 "/tmp/nvim-linux-${arch}/bin/nvim" /usr/local/bin/nvim
+  rm -rf "/tmp/nvim-linux-${arch}"
+  echo "  neovim $(nvim --version | head -1) installed"
+}
+
 echo "Installing dotfiles from $REPO..."
 
 # --- nvim ---
+if [ "$OS" = "Linux" ] && ! command -v nvim &>/dev/null; then
+  install_nvim_linux || true
+fi
 if command -v nvim &>/dev/null; then
   link "$REPO/nvim" ~/.config/nvim
   echo "  nvim: linked config"
+  echo "  nvim: syncing plugins (lazy.nvim)..."
   nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
-  echo "  nvim: plugins synced"
+  echo "  nvim: done"
 fi
 
 # --- git ---
@@ -64,37 +84,36 @@ fi
 
 # macOS-only tools
 if [ "$OS" = "Darwin" ]; then
-  # aerospace
+  if ! command -v nvim &>/dev/null && command -v brew &>/dev/null; then
+    echo "  installing neovim via brew..."
+    brew install neovim
+  fi
+
   if command -v aerospace &>/dev/null; then
     link "$REPO/aerospace.toml" ~/.config/aerospace/aerospace.toml
     echo "  aerospace: linked config"
   fi
 
-  # ghostty
   if [ -d "$HOME/.config/ghostty" ] || command -v ghostty &>/dev/null 2>&1; then
     link "$REPO/ghostty/config" ~/.config/ghostty/config
     echo "  ghostty: linked config"
   fi
 
-  # sketchybar
   if command -v sketchybar &>/dev/null; then
     link "$REPO/sketchybar" ~/.config/sketchybar
     echo "  sketchybar: linked config"
   fi
 
-  # borders
   if command -v borders &>/dev/null; then
     link "$REPO/borders/bordersrc" ~/.config/borders/bordersrc
     echo "  borders: linked config"
   fi
 
-  # karabiner
   if [ -d "$HOME/.config/karabiner" ]; then
     link "$REPO/karabiner.json" ~/.config/karabiner/karabiner.json
     echo "  karabiner: linked config"
   fi
 
-  # VS Code (native)
   VSCODE_DIR="$HOME/Library/Application Support/Code/User"
   if [ -d "$VSCODE_DIR" ] || command -v code &>/dev/null; then
     mkdir -p "$VSCODE_DIR"
@@ -103,7 +122,6 @@ if [ "$OS" = "Darwin" ]; then
     echo "  vscode: linked settings"
   fi
 
-  # Cursor
   CURSOR_DIR="$HOME/Library/Application Support/Cursor/User"
   if [ -d "$CURSOR_DIR" ] || command -v cursor &>/dev/null; then
     mkdir -p "$CURSOR_DIR"
@@ -112,7 +130,6 @@ if [ "$OS" = "Darwin" ]; then
     echo "  cursor: linked settings"
   fi
 
-  # Zed
   if command -v zed &>/dev/null; then
     link "$REPO/zed/settings.json" ~/.config/zed/settings.json
     link "$REPO/zed/keymap.json" ~/.config/zed/keymap.json
