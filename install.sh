@@ -100,18 +100,22 @@ if [ "$OS" = "Linux" ]; then
     echo "  code-server: settings + extensions installed"
   fi
 
-  # VS Code Desktop remote server — binary is ~/.vscode-server/code-<hash>
-  for vscode_cli in ~/.vscode-server/code-*; do
-    [ -x "$vscode_cli" ] && [ -f "$vscode_cli" ] || continue
+  # VS Code Desktop remote — copy extensions from code-server (same VSIX format, works offline).
+  # Run install.sh again after VS Code Desktop has connected at least once to pick up new ones.
+  cs_ext_dir=~/.local/share/code-server/extensions
+  vs_ext_dir=~/.vscode-server/extensions
+  if [ -d "$cs_ext_dir" ] && [ -d "$vs_ext_dir" ]; then
+    copied=0
+    for src in "$cs_ext_dir"/*/; do
+      name="$(basename "$src")"
+      [ -d "$vs_ext_dir/$name" ] || { cp -r "$src" "$vs_ext_dir/$name"; copied=$((copied+1)); }
+    done
     mkdir -p ~/.vscode-server/data/Machine
     link "$REPO/vscode/settings.json" ~/.vscode-server/data/Machine/settings.json
-    while IFS= read -r ext; do
-      [[ -z "$ext" || "$ext" == \#* ]] && continue
-      "$vscode_cli" ext install "$ext" --force 2>/dev/null || true
-    done < "$REPO/vscode/extensions.txt"
-    echo "  vscode-remote: settings + extensions installed"
-    break
-  done
+    echo "  vscode-remote: copied $copied extensions from code-server, linked settings"
+  elif [ ! -d "$vs_ext_dir" ]; then
+    echo "  vscode-remote: VS Code Desktop hasn't connected yet — re-run install.sh after first connect"
+  fi
 fi
 
 # macOS-only tools
