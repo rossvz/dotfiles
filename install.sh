@@ -39,6 +39,21 @@ if command -v nvim &>/dev/null; then
   echo "  nvim: done"
 fi
 
+# --- dexter LSP (Elixir) ---
+if [ "$OS" = "Linux" ] && ! command -v dexter &>/dev/null; then
+  echo "  installing dexter LSP..."
+  dexter_arch=""
+  case "$(uname -m)" in
+    aarch64) dexter_arch="arm64" ;;
+    x86_64)  dexter_arch="x86_64" ;;
+  esac
+  if [ -n "$dexter_arch" ]; then
+    curl -fsSL "https://github.com/remoteoss/dexter/releases/latest/download/dexter_Linux_${dexter_arch}.tar.gz" \
+      | tar xz -C /usr/local/bin dexter
+    echo "  dexter $(dexter --version 2>&1 | head -1) installed"
+  fi
+fi
+
 # --- git ---
 link "$REPO/gitconfig" ~/.gitconfig
 link "$REPO/gitignore_global" ~/.gitignore
