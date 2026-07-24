@@ -75,10 +75,13 @@ if command -v code-server &>/dev/null; then
   link "$REPO/vscode/settings.json" ~/.local/share/code-server/User/settings.json
   link "$REPO/vscode/keybindings.json" ~/.local/share/code-server/User/keybindings.json
   echo "  code-server: linked settings"
+  # Use the Open VSX-compatible list (code-server doesn't use the VS Code marketplace)
+  ext_list="$REPO/vscode/code-server-extensions.txt"
+  [ -f "$ext_list" ] || ext_list="$REPO/vscode/extensions.txt"
   while IFS= read -r ext; do
     [[ -z "$ext" || "$ext" == \#* ]] && continue
     code-server --install-extension "$ext" --force 2>/dev/null || true
-  done < "$REPO/vscode/extensions.txt"
+  done < "$ext_list"
   echo "  code-server: extensions installed"
 fi
 

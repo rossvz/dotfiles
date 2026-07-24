@@ -1,0 +1,54 @@
+# Extensions available on Open VSX — used by code-server in Coder workspaces.
+# Full VS Code marketplace list is in extensions.txt (for native VS Code / Cursor).
+
+# Elixir
+jakebecker.elixir-ls
+florinpatrascu.vscode-elixir-snippets
+jamilabreu.vscode-phoenix-snippets
+phoenixframework.phoenix
+samuel-pordeus.elixir-test
+royalmist.vscode-eex-format
+stefanjarina.vscode-eex-snippets
+
+# JS/TS/CSS
+dbaeumer.vscode-eslint
+esbenp.prettier-vscode
+bradlc.vscode-tailwindcss
+burkeholland.simple-react-snippets
+formulahendry.auto-close-tag
+formulahendry.auto-rename-tag
+yoavbls.pretty-ts-errors
+vincaslt.highlight-matching-tag
+stivo.tailwind-fold
+
+# Ruby
+shopify.ruby-lsp
+
+# Git
+eamodio.gitlens
+donjayamanne.githistory
+github.vscode-pull-request-github
+ziyasal.vscode-open-in-github
+
+# Docker / infra
+redhat.vscode-yaml
+mikestead.dotenv
+foxundermoon.shell-format
+
+# Themes / UI
+pkief.material-icon-theme
+emmanuelbeziat.vscode-great-icons
+enkia.tokyo-night
+mvllow.rose-pine
+catppuccin.catppuccin-vsc
+dracula-theme.theme-dracula
+sdras.night-owl
+
+# Editor quality-of-life
+vscodevim.vim
+usernamehw.errorlens
+streetsidesoftware.code-spell-checker
+wayou.vscode-todo-highlight
+stackbreak.comment-divider
+richie5um2.vscode-sort-json
+geeebe.duplicate
