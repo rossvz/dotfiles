@@ -49,8 +49,9 @@ if [ "$OS" = "Linux" ] && ! command -v dexter &>/dev/null; then
   esac
   if [ -n "$dexter_arch" ]; then
     curl -fsSL "https://github.com/remoteoss/dexter/releases/latest/download/dexter_Linux_${dexter_arch}.tar.gz" \
-      | tar xz -C /usr/local/bin dexter
-    echo "  dexter $(dexter --version 2>&1 | head -1) installed"
+      | tar xz --strip-components=1 -C /usr/local/bin "dexter_Linux_${dexter_arch}/dexter" \
+      && echo "  dexter $(dexter --version 2>&1 | head -1) installed" \
+      || echo "  WARNING: dexter install failed, continuing"
   fi
 fi
 
