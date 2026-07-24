@@ -100,14 +100,14 @@ if [ "$OS" = "Linux" ]; then
     echo "  code-server: settings + extensions installed"
   fi
 
-  # VS Code Desktop remote server — uses ~/.vscode-server/, full marketplace extensions
-  for vscode_cli in ~/.vscode-server/bin/*/bin/code-server; do
-    [ -x "$vscode_cli" ] || continue
+  # VS Code Desktop remote server — binary is ~/.vscode-server/code-<hash>
+  for vscode_cli in ~/.vscode-server/code-*; do
+    [ -x "$vscode_cli" ] && [ -f "$vscode_cli" ] || continue
     mkdir -p ~/.vscode-server/data/Machine
     link "$REPO/vscode/settings.json" ~/.vscode-server/data/Machine/settings.json
     while IFS= read -r ext; do
       [[ -z "$ext" || "$ext" == \#* ]] && continue
-      "$vscode_cli" --install-extension "$ext" --force 2>/dev/null || true
+      "$vscode_cli" ext install "$ext" --force 2>/dev/null || true
     done < "$REPO/vscode/extensions.txt"
     echo "  vscode-remote: settings + extensions installed"
     break
