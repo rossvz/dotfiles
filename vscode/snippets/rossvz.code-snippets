@@ -1,0 +1,8 @@
+{
+  "Div with class (Elm)": {
+    "scope": "elm",
+    "prefix": "div",
+    "body": ["div [Attributes.class \"$1\"] []"],
+    "description": "Insert div with class"
+  }
+}

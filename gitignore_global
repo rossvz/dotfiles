@@ -1,0 +1,11 @@
+*.iml
+
+.elixir_ls
+.elixir-tools
+.lexical
+
+.vscode/launch.json
+.vscode/tasks.json
+
+.cursorignore
+.secrets.env

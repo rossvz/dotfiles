@@ -1,0 +1,42 @@
+################
+# THEME / UI #
+################
+
+background-opacity = 1
+theme = Everforest Dark Hard
+#background-blur=20
+split-divider-color=#FFFFFF
+window-padding-x = 16
+window-padding-y = 4
+
+################
+#   Font
+################
+
+# font-family = "JetBrainsMono Nerd Font"
+font-family = "GeistMono Nerd Font"
+font-size = 15
+bold-is-bright = true
+
+# Font features
+font-feature = liga
+font-feature = calt
+
+###############
+window-inherit-working-directory=true
+title-report= true
+confirm-close-surface = false
+
+# macOS-specific styling
+macos-titlebar-style=tabs
+macos-option-as-alt = true
+macos-secure-input-indication = false
+
+
+# Shell integration
+shell-integration-features = cursor,sudo,title
+
+## Functionality
+clipboard-paste-protection = false
+
+keybind = shift+enter=text:\x1b\r

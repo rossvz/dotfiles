@@ -1,0 +1,3 @@
+fd-find
+lazycli
+tmux-sessionizer

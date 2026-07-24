@@ -1,0 +1,56 @@
+[
+  {
+    "bindings": {
+      "cmd-e": "file_finder::Toggle",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-\\ l": "pane::SplitRight",
+      "ctrl-\\ h": "pane::SplitLeft",
+      "ctrl-\\ j": "pane::SplitDown",
+      "ctrl-\\ k": "pane::SplitUp",
+      "cmd-; g": [
+        "task::Spawn",
+        {
+          "task_name": "lazygit",
+          "reveal_target": "center",
+        },
+      ],
+    },
+  },
+  {
+    "context": "Editor && extension == exs",
+    "bindings": {
+      "cmd-; c": [
+        "task::Spawn",
+        {
+          "task_name": "mix test nearest",
+        },
+      ],
+      "cmd-; f": [
+        "task::Spawn",
+        {
+          "task_name": "mix test file",
+        },
+      ],
+    },
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-/": "outline::Toggle"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-; s": [
+        "task::Spawn",
+        {
+          "task_name": "mix test all"
+        }
+      ]
+    }
+  }
+]

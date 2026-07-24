@@ -1,0 +1,17 @@
+{
+  "aura-theme": true,
+  "browser-tools-context-server": true,
+  "catppuccin": true,
+  "catppuccin-icons": true,
+  "charmed-icons": true,
+  "dockerfile": true,
+  "elixir": true,
+  "html": true,
+  "log": true,
+  "mcp-server-puppeteer": true,
+  "ruby": true,
+  "terraform": true,
+  "tokyo-night": true,
+  "toml": true,
+  "warm-light": true
+}
