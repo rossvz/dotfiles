@@ -66,8 +66,12 @@ if command -v lazygit &>/dev/null; then
   echo "  lazygit: linked config"
 fi
 
-# --- mise ---
-if command -v mise &>/dev/null; then
+# --- mise (global toolchain versions) ---
+# macOS ONLY. The mise GLOBAL config pins MY laptop's toolchain versions (erlang 27.0.1,
+# node 23.7.0, ruby, …). On a container/remote box (e.g. a Coder emr-mono workspace) the
+# toolchains are pre-baked at DIFFERENT versions and per-repo .tool-versions drives selection,
+# so linking my personal global here makes mise report everything "missing" and try to reinstall.
+if command -v mise &>/dev/null && [ "$OS" = "Darwin" ]; then
   link "$REPO/mise/config.toml" ~/.config/mise/config.toml
   echo "  mise: linked config"
 fi
